@@ -1,7 +1,7 @@
 
 node() {
     stage('CheckoutLatestTestCases') {
-        git branch: 'dev',
+        git branch: 'master',
             credentialsId: 'jingghster',
             url:'https://github.com/Jinggit/Small.git'
     }
