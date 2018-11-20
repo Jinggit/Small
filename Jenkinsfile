@@ -1,7 +1,7 @@
 
 node() {
     stage('CheckoutLatestTestCases') {
-         checkout()
+         checkout scm
     }
     try {
         stage('QAEnvTest') {
