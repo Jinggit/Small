@@ -6,7 +6,7 @@ ${API_API_ROOT_URL}    https://api.speedx.com
 ${WEBAPI_API_ROOT_URL}    https://webapi.speedx.com
 ${API_VERSION}    v1.0    # API版本号
 ${USER_AGENT}    iOS/10.300000;iPhone8,4;beast/2.9.2.7321    # USER_AGENT
-${TIMEOUT}    1
+${TIMEOUT}    18
 &{HEADER}    Content-Type=application/x-www-form-urlencoded    Connection=keep-alive    X-Client-Lang=en-CA    Accept=*/*    User-Agent=iOS/10.300000;iPhone8,4;beast/2.9.2.7321    Accept-Language=en-CA;q=1, zh-Hans-CA;q=0.9    Content-Length=44    Accept-Encoding=gzip, deflate    # LOGIN_HEADER
 ${CONTENT_TYPE}    application/x-www-form-urlencoded    # CONTENT_TYPE
 ${LOGIN_PASSWORD}    jingmcse
