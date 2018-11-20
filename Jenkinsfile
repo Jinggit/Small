@@ -1,22 +1,19 @@
 
-node('aliyun-windows-01') {
+node() {
     stage('CheckoutLatestTestCases') {
         git branch: 'dev',
-            credentialsId: 'jenkins-gitlab',
-            url:'http://git.xiaoyanzhang.com//automation/api-sanitytest-qa-env'
+            credentialsId: 'jingghster',
+            url:'https://github.com/Jinggit/Small.git'
     }
     try {
         stage('QAEnvTest') {
 
             env.NODE_ENV = "QA"
-            env.API_ROOT_URL = "https://qa.projectname.com"
+            env.API_ROOT_URL = "https://api.speedx.com"
             env.EXCLUDE1 = "notready"
-            env.DIFFY_ENV = "https://qa.projectname.com,https://api.projectname.com"
-            env.DIFFY = "NO"
-            env.SQL_VALIDATION = "NO"
             print "Environment : ${env.NODE_ENV}"
             bat(script: 'dir', returnStatus: true, returnStdout: true)
-            result = bat(script: "pybot --variable QA-API_API_ROOT_URL:${env.API_ROOT_URL} --variable DIFFY_ENV:${env.DIFFY_ENV} --variable DIFFY:${env.DIFFY} --variable SQL_VALIDATION:${env.SQL_VALIDATION} --outputdir ./logs --exclude ${env.EXCLUDE1} ./", returnStatus: true, returnStdout: true)
+            result = bat(script: "pybot --variable API_API_ROOT_URL:${env.API_ROOT_URL} --outputdir ./logs --exclude ${env.EXCLUDE1} ./Speedx", returnStatus: true, returnStdout: true)
             step([$class: 'RobotPublisher',
                 disableArchiveOutput: false,
                 logFileName: 'log.html',
