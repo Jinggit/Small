@@ -1,7 +1,7 @@
 
 node() {
     stage('CheckoutLatestTestCases') {
-         checkout(
+         checkout([
         [
             $class: 'GitSCM',
             extensions: [               
