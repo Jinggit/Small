@@ -8,7 +8,7 @@ node() {
                 [$class: 'CleanCheckout'],              
             ],
             branches: [
-                [name: 'master']
+                [name: 'dev']
             ], 
             userRemoteConfigs: 
             [[
