@@ -1,9 +1,24 @@
 
 node() {
     stage('CheckoutLatestTestCases') {
-        git branch: 'master',
-            credentialsId: 'jingghster',
-            url:'https://github.com/Jinggit/Small.git'
+         checkout(
+        [
+            $class: 'GitSCM',
+            extensions: [               
+                [$class: 'CleanCheckout'],              
+            ],
+            branches: [
+                [name: '']
+            ], 
+            userRemoteConfigs: 
+            [[
+                credentialsId: 'jingghster', 
+                url: 'https://github.com/Jinggit/Small.git',
+                refspec: ('+refs/pull-requests/*/from:refs/remotes/origin/pr/*/from'), 
+                branch: ('origin/pr/${pullRequestId}/from')
+            ]]
+        ])
+
     }
     try {
         stage('QAEnvTest') {
