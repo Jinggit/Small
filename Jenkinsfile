@@ -13,7 +13,7 @@ node() {
             env.EXCLUDE1 = "notready"
             print "Environment : ${env.NODE_ENV}"
             bat(script: 'dir', returnStatus: true, returnStdout: true)
-            result = bat(script: "pybot --variable API_API_ROOT_URL:${env.API_ROOT_URL} --outputdir ./logs --exclude ${env.EXCLUDE1} ./Speedx", returnStatus: true, returnStdout: true)
+            result = sh(script: "pybot --variable API_API_ROOT_URL:${env.API_ROOT_URL} --outputdir ./logs --exclude ${env.EXCLUDE1} ./Speedx", returnStatus: true, returnStdout: true)
             step([$class: 'RobotPublisher',
                 disableArchiveOutput: false,
                 logFileName: 'log.html',
