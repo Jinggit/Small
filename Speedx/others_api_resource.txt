@@ -1,0 +1,178 @@
+*** Settings ***
+Resource          public_api_resource.txt
+
+*** Keywords ***
+Api_v3.0_getuserinfobyuserid
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${userId}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETUSERINFOBYUSERID_URI}    ${cookie}    userId    ${session}        userId    ${userId}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getgeocode
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${area}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETGEOCODE_URI}    ${cookie}    userId    ${session}        area    ${area}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getclublist
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${count}    ${geo_code}    ${keyName}    ${orderBy}    ${page}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETCLUBLIST_URI}    ${cookie}    userId    ${session}        count    ${count}    geo_code    ${geo_code}    keyName    ${keyName}    orderBy    ${orderBy}    page    ${page}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getmyclubrelation
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETMYCLUBRELATION_URI}    ${cookie}    userId    ${session}    
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getchattoken
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETCHATTOKEN_URI}    ${cookie}    userId    ${session}    
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_get_app_setting
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GET_APP_SETTING_URI}    ${cookie}    userId    ${session}    
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getclubmemberranklist
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${clubId}    ${rankType}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETCLUBMEMBERRANKLIST_URI}    ${cookie}    userId    ${session}        clubId    ${clubId}    rankType    ${rankType}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_updatedeviceinfo
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${deviceToken}    ${latitude}    ${longitude}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_UPDATEDEVICEINFO_URI}    ${cookie}    userId    ${session}        deviceToken    ${deviceToken}    latitude    ${latitude}    longitude    ${longitude}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_checklatestapkupdate
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_CHECKLATESTAPKUPDATE_URI}    ${cookie}    userId    ${session}    
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getunreadcount
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETUNREADCOUNT_URI}    ${cookie}    userId    ${session}    
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_sign_in
+    [Arguments]        ${password}    ${type}    ${username}
+    ${resp}=    Post Request With Dict    ${API_API_ROOT_URL}    ${API_V3.0_SIGN_IN_URI}        password    ${password}    type    ${type}    username    ${username}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    ${userToken}=    Create List
+    ${status}    ${result}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'!='0'    Append To List    ${userToken}    ${EMPTY}    ELSE    Append To List    ${userToken}    ${resp.json()['result']['userId']}
+    ${result}=    Run Keyword If    '${status}' == 'FAIL'    Append To List    ${userToken}    Token not found
+    ${userToken}=    Evaluate    ','.join(${userToken})
+    ${status}    ${cookie}=    Run Keyword And Ignore Error    Set Variable    ${resp.headers['Set-Cookie']}
+    ${cookie}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    Cookie not found    ELSE    Set Variable    ${resp.headers['Set-Cookie']}
+    [Return]    ${resp}    ${success}    ${message}    ${cookie}    ${userToken}
+Api_v3.0_getuserdiagram
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${days}    ${userId}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETUSERDIAGRAM_URI}    ${cookie}    userId    ${session}        days    ${days}    userId    ${userId}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_html_v1_clubactivityinfo
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${activityId}
+    ${resp}=    Post Request With Dict and Request Body Token    ${WEBAPI_API_ROOT_URL}    ${API_HTML_V1_CLUBACTIVITYINFO_URI}    ${cookie}    userId    ${session}        activityId    ${activityId}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_asolog
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${id}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_ASOLOG_URI}    ${cookie}    userId    ${session}        id    ${id}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_clubactivitylist
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${clubId}    ${count}    ${page}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_CLUBACTIVITYLIST_URI}    ${cookie}    userId    ${session}        clubId    ${clubId}    count    ${count}    page    ${page}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getactivitydatabyuserid
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${userId}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETACTIVITYDATABYUSERID_URI}    ${cookie}    userId    ${session}        userId    ${userId}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getgoalconfig
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETGOALCONFIG_URI}    ${cookie}    userId    ${session}    
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getactivitiesbyuserid
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${count}    ${page}    ${userId}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETACTIVITIESBYUSERID_URI}    ${cookie}    userId    ${session}        count    ${count}    page    ${page}    userId    ${userId}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getclubinfo
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${clubId}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETCLUBINFO_URI}    ${cookie}    userId    ${session}        clubId    ${clubId}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getclubtimeline
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${clubId}    ${endStamp}    ${startStamp}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETCLUBTIMELINE_URI}    ${cookie}    userId    ${session}        clubId    ${clubId}    endStamp    ${endStamp}    startStamp    ${startStamp}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_html_v1_getclubactivitystatisticsbyactid
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${activityId}
+    ${resp}=    Post Request With Dict and Request Body Token    ${WEBAPI_API_ROOT_URL}    ${API_HTML_V1_GETCLUBACTIVITYSTATISTICSBYACTID_URI}    ${cookie}    userId    ${session}        activityId    ${activityId}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getbadgelist
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${count}    ${isHistory}    ${page}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETBADGELIST_URI}    ${cookie}    userId    ${session}        count    ${count}    isHistory    ${isHistory}    page    ${page}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_auth_token
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}    ${password}    ${type}    ${username}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_AUTH_TOKEN_URI}    ${cookie}    userId    ${session}        password    ${password}    type    ${type}    username    ${username}
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}
+Api_v3.0_getmygoalinfo
+    [Arguments]    ${cookie}    ${session}    ${headerTokenvalue}
+    ${resp}=    Post Request With Dict and Request Body Token    ${API_API_ROOT_URL}    ${API_V3.0_GETMYGOALINFO_URI}    ${cookie}    userId    ${session}    
+    ${status}    ${success}=    Run Keyword And Ignore Error    Set Variable    ${resp.json()['code']}
+    ${success}=    Run Keyword If    '${status}' == 'FAIL'    Set Variable    API fail    ELSE    Set Variable    ${resp.json()['code']}
+    ${status}    ${message}=    Run Keyword And Ignore Error    Run Keyword If    '${success}'=='0'    Set Variable    ${EMPTY}    ELSE    Set Variable    ${resp.json()['message']}
+    [Return]    ${resp}    ${success}    ${message}

@@ -1,0 +1,373 @@
+﻿*** Settings ***
+Documentation     公共基础关键字
+Library           Collections
+Library           RequestsLibrary
+Library           json
+Resource          common_resource.txt
+Library           String
+Library           DatabaseLibrary
+Library           DateTime
+Library           Selenium2Library
+Library           OperatingSystem
+
+*** Keywords ***
+Post Request with Dict and Cookie
+    [Arguments]    ${root}    ${uri}    ${session}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    ${data}=    Create Dictionary    @{form_data}
+    Comment    ${json_data}=    json.dumps    ${data}
+    ${headers}=    Create Dictionary    &{HEADER}    Content-Type=${CONTENT_TYPE}    User-Agent=${USER_AGENT}    Cookie=${session}
+    Comment    ${json_headers}=    json.dumps    ${headers}
+    ${resp}=    Post Request    demo    ${uri}    ${data}    \    ${headers}
+    ...    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+MakeCID
+    ${yyyy}    ${mm}    ${dd}    ${hh}    ${min}    ${ss}=    Get Time
+    ...    year,month,day,hour, min, sec
+    ${cid}=    Set Variable    ${yyyy}${mm}${dd}${hh}${min}${ss}00000
+    [Return]    ${cid}
+
+MakeID
+    [Documentation]    生成10位ID值
+    ${yyyy}    ${mm}    ${dd}    ${hh}    ${min}    ${ss}=    Get Time
+    ...    year,month,day,hour, min, sec
+    ${id}=    Set Variable    ${yyyy}${mm}${dd}${hh}
+    [Return]    ${id}
+
+Currency Format
+    [Arguments]    ${value}
+    [Documentation]    货币格式转换
+    ${locale}=    Evaluate    locale.setlocale( locale.LC_ALL, '' )    locale
+    ${format_value}=    Evaluate    locale.currency(${value}, grouping=True)    locale
+    ${ignore_first}=    Get Substring    ${format_value}    1
+    [Return]    ${ignore_first}
+
+List Should Contain Value Contain
+    [Arguments]    ${str}    ${val}
+    ${status}=    Set Variable    FAIL
+    : FOR    ${item}    IN    @{str}
+    \    ${item}=    Evaluate    "${item}".decode('utf8')
+    \    ${status}    ${value}=    Run Keyword and Ignore Error    Should Contain    ${item}    ${val}
+    \    Run Keyword If    '${status}' == 'PASS'    Exit For Loop
+    Should Be Equal    ${status}    PASS
+    [Return]    ${status}
+
+Post Request with Dict
+    [Arguments]    ${root}    ${uri}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    ${data}=    Create Dictionary    @{form_data}
+    ${headers}=    Create Dictionary    &{HEADER}    Content-Type=${CONTENT_TYPE}    User-Agent=${USER_AGENT}
+    ${resp}=    Post Request    demo    ${uri}    ${data}    \    ${headers}
+    ...    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Generate Email
+    ${yyyy}    ${mm}    ${dd}    ${hh}    ${min}    ${ss}=    Get Time
+    ...    year,month,day,hour, min, sec
+    ${email}=    Set Variable    apitest${yyyy}${mm}${dd}${hh}${min}${ss}@speedx.com
+    [Return]    ${email}
+
+Get List From Api
+    [Arguments]    ${resp}    ${seq}    ${element_name}
+    ${alist}    Create List
+    ${len}=    Get Length    ${resp[${${seq}}]}
+    : FOR    ${INDEX}    IN RANGE    0    ${len}
+    \    ${el}=    Convert To String    ${resp[${${seq}}][${INDEX}]['${element_name}']}
+    \    Append To List    ${alist}    ${el}
+    [Return]    ${alist}
+
+Get List From DB
+    [Arguments]    ${query_result}
+    ${alist}    Create List
+    : FOR    ${el}    IN    @{query_result}
+    \    Append To List    ${alist}    ${el[0]}
+    [Return]    ${alist}
+
+Compare DB with API
+    [Arguments]    ${resp}    ${seq}    ${element_name}    ${dbname}    ${sql}
+    ${list_api}=    Get List From Api    ${resp}    ${seq}    ${element_name}
+    ${query_result}=    Get Data By SQL Query    ${dbname}    ${sql}
+    ${list_db}=    Get List From DB    ${query_result}
+    Lists Should Be Equal    ${list_db}    ${list_api}
+
+Compare DB with API Contains
+    [Arguments]    ${resp}    ${seq}    ${element_name}    ${dbname}    ${sql}
+    ${list_api}=    Get List From Api    ${resp}    ${seq}    ${element_name}
+    ${query_result}=    Get Data By SQL Query    ${dbname}    ${sql}
+    ${list_db}=    Get List From DB    ${query_result}
+    List Should Contain Sub List    ${list_db}    ${list_api}
+
+Get Request with Cookie
+    [Arguments]    ${root}    ${uri}    ${cookies}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    ${data}=    Create Dictionary    @{form_data}
+    Comment    ${json_data}=    json.dumps    ${data}
+    ${headers}=    Create Dictionary    &{HEADER}    Cookie=${cookies}    User-Agent=${USER_AGENT}
+    ${resp}=    Get Request    demo    ${uri}    ${headers}    \    ${data}
+    ...    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Del Request with Cookie
+    [Arguments]    ${root}    ${uri}    ${cookies}
+    Create Session    demo    ${root}
+    ${headers}=    Create Dictionary    &{HEADER}    Content-Type=${CONTENT_TYPE}    Cookie=${cookies}    User-Agent=${USER_AGENT}
+    ${resp}=    Delete Request    demo    ${uri}    ${headers}    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Connect To DB
+    [Arguments]    ${DBTEPY}    ${DBNAME}    ${DBUSERNAME}    ${DBPASSWORD}    ${DBHOST}    ${DBPORT}
+    [Documentation]    A basic Keyword for DB connection
+    Connect To Database    ${DBTEPY}    ${DBNAME}    ${DBUSERNAME}    ${DBPASSWORD}    ${DBHOST}    ${DBPORT}
+
+Post Request with Json and Cookie
+    [Arguments]    ${root}    ${uri}    ${session}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    ${data}=    Create Dictionary    @{form_data}
+    ${headers}=    Create Dictionary    &{HEADER}    Content-Type=${CONTENT_TYPE}    User-Agent=${USER_AGENT}    Cookie=${session}
+    ${data}=    json.loads    ${data['param']}
+    ${resp}=    Post Request    demo    ${uri}    ${data}    \    ${headers}
+    ...    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Post Request With Json
+    [Arguments]    ${root}    ${uri}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    ${data}=    Create Dictionary    @{form_data}
+    ${headers}=    Create Dictionary    &{HEADER}    Content-Type=${CONTENT_TYPE}    User-Agent=${USER_AGENT}
+    ${data}=    json.loads    ${data['param']}
+    ${resp}=    Post Request    demo    ${uri}    ${data}    \    ${headers}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Get Data By SQL Query
+    [Arguments]    ${dbname}    ${sql}
+    Connect To DB    ${DBTEPY}    ${dbname}    ${DBUSERNAME}    ${DBPASSWORD}    ${DBHOST}    ${DBPORT}
+    ${queryReasults}=    query    ${sql}
+    [Teardown]    Disconnect From Database
+    [Return]    ${queryReasults}
+
+Get Request Pro
+    [Arguments]    ${root}    ${uri}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    ${data}=    Create Dictionary    @{form_data}
+    Comment    ${json_data}=    json.dumps    ${data}
+    ${headers}=    Create Dictionary    &{HEADER}    User-Agent=${USER_AGENT}
+    ${resp}=    Get Request    demo    ${uri}    ${headers}    ${data}    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Get Request with Cookie and Customized User-Agent
+    [Arguments]    ${root}    ${uri}    ${cookies}    ${UserAgent}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    ${data}=    Create Dictionary    @{form_data}
+    Comment    ${json_data}=    json.dumps    ${data}
+    ${headers}=    Create Dictionary    &{HEADER}    Cookie=${cookies}    User-Agent=${UserAgent}
+    ${resp}=    Get Request    demo    ${uri}    ${headers}    \    ${data}
+    ...    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Post Request With File and Data
+    [Arguments]    ${root}    ${uri}    ${cookies}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    &{files}=    Create_File_Dict    ${form_data[1]}
+    ${data}=    Create Dictionary    @{form_data}
+    ${headers}=    Create Dictionary    User-Agent=${USER_AGENT}    Cookie=${cookies}
+    ${resp}=    Post Request    demo    ${uri}    ${data}    ${EMPTY}    ${headers}
+    ...    files=${files}    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Post Request With Dict and Request Header Token Body Token
+    [Arguments]    ${root}    ${uri}    ${cookie}    ${headerTokenname}    ${headerTokenvalue}    ${bodyTokenname}
+    ...    ${bodyTokenvalue}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    &{data}=    Create Dictionary    @{form_data}
+    ${bodyTokenname}=    Split String    ${bodyTokenname}    ,
+    ${bodyTokenvalue}=    Split String    ${bodyTokenvalue}    ,
+    &{token}=    Evaluate    dict(zip(${bodyTokenname}, ${bodyTokenvalue}))
+    ${data}=    Create Dictionary    &{data}    &{token}
+    ${headers}=    Create Dictionary    &{HEADER}    Content-Type=${CONTENT_TYPE}    User-Agent=${USER_AGENT}    ${headerTokenname}=${headerTokenvalue}    Cookie=${cookie}
+    ${resp}=    Post Request    demo    ${uri}    ${data}    \    ${headers}
+    ...    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Post Request With Dict and Request Header Token
+    [Arguments]    ${root}    ${uri}    ${cookie}    ${headerTokenname}    ${headerTokenvalue}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    ${data}=    Create Dictionary    @{form_data}
+    ${headers}=    Create Dictionary    &{HEADER}    Content-Type=${CONTENT_TYPE}    User-Agent=${USER_AGENT}    ${headerTokenname}=${headerTokenvalue}    Cookie=${cookie}
+    ${resp}=    Post Request    demo    ${uri}    ${data}    \    ${headers}
+    ...    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Post Request With Dict and Request Body Token
+    [Arguments]    ${root}    ${uri}    ${cookie}    ${bodyTokenname}    ${bodyTokenvalue}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    &{data}=    Create Dictionary    @{form_data}
+    ${bodyTokenname}=    Split String    ${bodyTokenname}    ,
+    ${bodyTokenvalue}=    Split String    ${bodyTokenvalue}    ,
+    &{token}=    Evaluate    dict(zip(${bodyTokenname}, ${bodyTokenvalue}))
+    ${data}=    Create Dictionary    &{data}    &{token}
+    ${headers}=    Create Dictionary    &{HEADER}    Content-Type=${CONTENT_TYPE}    User-Agent=${USER_AGENT}    Cookie=${cookie}
+    ${resp}=    Post Request    demo    ${uri}    ${data}    \    ${headers}
+    ...    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Get Request With Dict And Request Header Token Body Token
+    [Arguments]    ${root}    ${uri}    ${cookie}    ${headerTokenname}    ${headerTokenvalue}    ${bodyTokenname}
+    ...    ${bodyTokenvalue}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    &{data}=    Create Dictionary    @{form_data}
+    ${bodyTokenname}=    Split String    ${bodyTokenname}    ,
+    ${bodyTokenvalue}=    Split String    ${bodyTokenvalue}    ,
+    &{token}=    Evaluate    dict(zip(${bodyTokenname}, ${bodyTokenvalue}))
+    ${data}=    Create Dictionary    &{data}    &{token}
+    ${headers}=    Create Dictionary    &{HEADER}    Content-Type=${CONTENT_TYPE}    User-Agent=${USER_AGENT}    ${headerTokenname}=${headerTokenvalue}    Cookie=${cookie}
+    ${resp}=    Get Request    demo    ${uri}    ${headers}    \    ${data}
+    ...    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Get Request With Dict and Request Header Token
+    [Arguments]    ${root}    ${uri}    ${cookie}    ${headerTokenname}    ${headerTokenvalue}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    ${data}=    Create Dictionary    @{form_data}
+    ${headers}=    Create Dictionary    &{HEADER}    Content-Type=${CONTENT_TYPE}    User-Agent=${USER_AGENT}    ${headerTokenname}=${headerTokenvalue}    Cookie=${cookie}
+    ${resp}=    Get Request    demo    ${uri}    ${headers}    \    ${data}
+    ...    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Get Request With Dict and Request Body Token
+    [Arguments]    ${root}    ${uri}    ${cookie}    ${bodyTokenname}    ${bodyTokenvalue}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    &{data}=    Create Dictionary    @{form_data}
+    ${bodyTokenname}=    Split String    ${bodyTokenname}    ,
+    ${bodyTokenvalue}=    Split String    ${bodyTokenvalue}    ,
+    &{token}=    Evaluate    dict(zip(${bodyTokenname}, ${bodyTokenvalue}))
+    ${data}=    Create Dictionary    &{data}    &{token}
+    ${headers}=    Create Dictionary    &{HEADER}    Content-Type=${CONTENT_TYPE}    User-Agent=${USER_AGENT}    Cookie=${cookie}
+    ${resp}=    Get Request    demo    ${uri}    ${headers}    \    ${data}
+    ...    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Post Request With Dict and Request Body Token Special
+    [Arguments]    ${root}    ${uri}    ${cookie}    ${bodyTokenname}    ${bodyTokenvalue}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    ${params}=    Add_ApiKey_Params    ${bodyTokenname}    ${bodyTokenvalue}    ${form_data[1]}
+    &{data}=    Create Dictionary    ${form_data[0]}    ${params}
+    ${headers}=    Create Dictionary    &{HEADER}    Content-Type=${CONTENT_TYPE}    User-Agent=${USER_AGENT}    Cookie=${cookie}
+    ${resp}=    Post Request    demo    ${uri}    ${data}    \    ${headers}
+    ...    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Add_ApiKey_Params
+    [Arguments]    ${bodyTokenname}    ${bodyTokenvalue}    ${params}
+    ${params}=    Evaluate    ${params}
+    Set To Dictionary    ${params}    ${bodyTokenname}    ${bodyTokenvalue}
+    ${params}=    json.dumps    ${params}
+    [Return]    ${params}
+
+Post Request With File and Dict and Request Header Token Body Token
+    [Arguments]    ${root}    ${uri}    ${cookie}    ${headerTokenname}    ${headerTokenvalue}    ${bodyTokenname}
+    ...    ${bodyTokenvalue}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    &{files}=    Create_File_Dict    ${form_data[1]}
+    &{data}=    Create Dictionary    @{form_data}
+    ${bodyTokenname}=    Split String    ${bodyTokenname}    ,
+    ${bodyTokenvalue}=    Split String    ${bodyTokenvalue}    ,
+    &{token}=    Evaluate    dict(zip(${bodyTokenname}, ${bodyTokenvalue}))
+    ${data}=    Create Dictionary    &{data}    &{token}
+    ${headers}=    Create Dictionary    User-Agent=${USER_AGENT}    ${headerTokenname}=${headerTokenvalue}    Cookie=${cookie}
+    ${resp}=    Post Request    demo    ${uri}    ${data}    ${EMPTY}    ${headers}
+    ...    files=${files}    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Post Request With File and Dict and Request Header Token
+    [Arguments]    ${root}    ${uri}    ${cookie}    ${headerTokenname}    ${headerTokenvalue}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    &{files}=    Create_File_Dict    ${form_data[1]}
+    ${data}=    Create Dictionary    @{form_data}
+    ${headers}=    Create Dictionary    User-Agent=${USER_AGENT}    ${headerTokenname}=${headerTokenvalue}    Cookie=${cookie}
+    ${resp}=    Post Request    demo    ${uri}    ${data}    ${EMPTY}    ${headers}
+    ...    files=${files}    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Post Request With File and Dict and Request Body Token
+    [Arguments]    ${root}    ${uri}    ${cookie}    ${bodyTokenname}    ${bodyTokenvalue}    @{form_data}
+    Create Session    demo    ${root}    disable_warnings=1
+    &{files}=    Create_File_Dict    ${form_data[1]}
+    &{data}=    Create Dictionary    @{form_data}
+    ${bodyTokenname}=    Split String    ${bodyTokenname}    ,
+    ${bodyTokenvalue}=    Split String    ${bodyTokenvalue}    ,
+    &{token}=    Evaluate    dict(zip(${bodyTokenname}, ${bodyTokenvalue}))
+    ${data}=    Create Dictionary    &{data}    &{token}
+    ${headers}=    Create Dictionary    User-Agent=${USER_AGENT}    Cookie=${cookie}
+    ${resp}=    Post Request    demo    ${uri}    ${data}    ${EMPTY}    ${headers}
+    ...    files=${files}    timeout=${TIMEOUT}
+    Log    ${resp}
+    ${status}    ${resp_content}=    Run Keyword and Ignore Error    Evaluate    "${resp.json()}".encode('utf-8').decode('unicode_escape')
+    Log    ${resp_content}
+    [Return]    ${resp}
+
+Create_File_Dict
+    [Arguments]    ${file_dict}
+    &{file_dict}=    json.loads    ${file_dict}
+    ${files}=    Create Dictionary
+    : FOR    ${file_param}    IN    @{file_dict.keys()}
+    \    ${test_suite_dir}=	Evaluate	os.path.dirname('${SUITE SOURCE}')	modules=os
+    \    ${filename}=    Get From Dictionary    ${file_dict}    ${file_param}
+    \    ${path}    ${ext}=    Split Extension    ${filename}
+    \    ${file_data}=    Evaluate    ('${filename}',open(r'${filename}','rb'),'image/${ext}')    #('${filename}',open(r'${test_suite_dir}/${filename}','rb'),'image/${ext}')
+    \    Set To Dictionary    ${files}    ${file_param}=${file_data}
+    [Return]    &{files}

@@ -1,0 +1,49 @@
+*** Settings ***
+Documentation    https://api.speedx.com/api/v3.0/getClubList
+Force Tags    prod
+Resource    all_api_resource.txt
+
+*** Test Cases ***
+Api_v3.0_getclublist
+    [Documentation]    https://api.speedx.com/api/v3.0/getClubList
+    [Template]    Api_v3.0_getclublist_Temp
+    TestData: 登录用户   0    ${EMPTY}        20    ${EMPTY}    ${EMPTY}    recommend    1
+
+Api_v3.0_getclublist_negative
+    [Documentation]    https://api.speedx.com/api/v3.0/getClubList
+    [Tags]    notready    
+    [Template]    Api_v3.0_getclublist_negative_Temp
+    TestData1: 登录用户   0    ${EMPTY}    20    ${EMPTY}    ${EMPTY}    recommend    1
+    TestData2: 登录用户   0    ${EMPTY}    20    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}
+    TestData3: 登录用户   0    ${EMPTY}    20    ${EMPTY}    ${EMPTY}    recommend    1
+    TestData4: 登录用户   0    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    recommend    1
+    TestData5: 登录用户   0    ${EMPTY}    20    ${EMPTY}    ${EMPTY}    recommend    1
+    TestData6: 登录用户   0    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    recommend    ${EMPTY}
+    TestData7: 登录用户   0    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}
+    TestData8: 登录用户   0    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    1
+    TestData9: 登录用户   0    ${EMPTY}    20    ${EMPTY}    ${EMPTY}    recommend    ${EMPTY}
+    TestData10: 登录用户   0    ${EMPTY}    20    ${EMPTY}    ${EMPTY}    recommend    1
+    TestData11: 登录用户   0    ${EMPTY}    20    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}
+    TestData12: 登录用户   0    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    1
+    TestData13: 登录用户   0    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}
+    TestData14: 登录用户   0    ${EMPTY}    20    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}
+    TestData15: 登录用户   0    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    1
+    TestData16: 登录用户   0    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    recommend    ${EMPTY}
+    TestData17: 登录用户   0    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}
+
+*** Keywords ***
+Api_v3.0_getclublist_Temp
+    [Arguments]    ${testdata_info}    ${success}    ${message}        ${count}    ${geo_code}    ${keyName}    ${orderBy}    ${page}
+    Log    ${testdata_info}
+    ${resp}=    Api_v3.0_sign_in    ${LOGIN_PASSWORD}    ${LOGIN_TYPE}    ${LOGIN_USERNAME}
+    ${resp}=    Api_v3.0_getclublist    ${resp[3]}    ${resp[4]}    ${EMPTY}    ${count}    ${geo_code}    ${keyName}    ${orderBy}    ${page}
+    Should Be Equal As Strings    ${resp[1]}    ${success}
+    Should Be Equal As Strings    ${resp[2]}    ${message}
+*** Keywords ***
+Api_v3.0_getclublist_negative_Temp
+    [Arguments]    ${testdata_info}    ${success}    ${message}        ${count}    ${geo_code}    ${keyName}    ${orderBy}    ${page}
+    Log    ${testdata_info}
+    ${resp}=    Api_v3.0_sign_in    ${LOGIN_PASSWORD}    ${LOGIN_TYPE}    ${LOGIN_USERNAME}
+    ${resp}=    Api_v3.0_getclublist    ${resp[3]}    ${resp[4]}    ${EMPTY}    ${count}    ${geo_code}    ${keyName}    ${orderBy}    ${page}
+    Should Not Be Equal As Strings    ${resp[1]}    ${success}
+    Should Not Be Equal As Strings    ${resp[2]}    ${message}

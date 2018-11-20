@@ -1,0 +1,37 @@
+*** Settings ***
+Documentation    https://api.speedx.com/api/v3.0/sign_in
+Force Tags    prod
+Resource    all_api_resource.txt
+
+*** Test Cases ***
+Api_v3.0_sign_in
+    [Documentation]    https://api.speedx.com/api/v3.0/sign_in
+    [Template]    Api_v3.0_sign_in_Temp
+    TestData: 登录用户    0    ${EMPTY}    ${LOGIN_PASSWORD}    ${LOGIN_TYPE}    ${LOGIN_USERNAME}
+
+Api_v3.0_sign_in_negative
+    [Documentation]    https://api.speedx.com/api/v3.0/sign_in
+    [Tags]    notready    
+    [Template]    Api_v3.0_sign_in_negative_Temp
+    TestData1: 输入组合测试    0    ${EMPTY}    jingmcse    2    5146992566
+    TestData2: 输入组合测试    0    ${EMPTY}    ${EMPTY}    2    5146992566
+    TestData3: 输入组合测试    0    ${EMPTY}    jingmcse    ${EMPTY}    ${EMPTY}
+    TestData4: 输入组合测试    0    ${EMPTY}    ${EMPTY}    2    ${EMPTY}
+    TestData5: 输入组合测试    0    ${EMPTY}    ${EMPTY}    ${EMPTY}    5146992566
+    TestData6: 输入组合测试    0    ${EMPTY}    ${EMPTY}    2    5146992566
+    TestData7: 输入组合测试    0    ${EMPTY}    jingmcse    ${EMPTY}    ${EMPTY}
+
+*** Keywords ***
+Api_v3.0_sign_in_Temp
+    [Arguments]    ${testdata_info}    ${success}    ${message}    ${password}    ${type}    ${username}
+    Log    ${testdata_info}
+    ${resp}=    Api_v3.0_sign_in        ${password}    ${type}    ${username}
+    Should Be Equal As Strings    ${resp[1]}    ${success}
+    Should Be Equal As Strings    ${resp[2]}    ${message}
+*** Keywords ***
+Api_v3.0_sign_in_negative_Temp
+    [Arguments]    ${testdata_info}    ${success}    ${message}    ${password}    ${type}    ${username}
+    Log    ${testdata_info}
+    ${resp}=    Api_v3.0_sign_in        ${password}    ${type}    ${username}
+    Should Not Be Equal As Strings    ${resp[1]}    ${success}
+    Should Not Be Equal As Strings    ${resp[2]}    ${message}

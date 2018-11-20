@@ -1,0 +1,39 @@
+*** Settings ***
+Documentation    https://api.speedx.com/api/v3.0/getActivitiesByUserId
+Force Tags    prod
+Resource    all_api_resource.txt
+
+*** Test Cases ***
+Api_v3.0_getactivitiesbyuserid
+    [Documentation]    https://api.speedx.com/api/v3.0/getActivitiesByUserId
+    [Template]    Api_v3.0_getactivitiesbyuserid_Temp
+    TestData: 登录用户   0    ${EMPTY}        20    1    570288fdb9d7fb4847572d35
+
+Api_v3.0_getactivitiesbyuserid_negative
+    [Documentation]    https://api.speedx.com/api/v3.0/getActivitiesByUserId
+    [Tags]    notready    
+    [Template]    Api_v3.0_getactivitiesbyuserid_negative_Temp
+    TestData1: 登录用户   0    ${EMPTY}    20    1    570288fdb9d7fb4847572d35
+    TestData2: 登录用户   0    ${EMPTY}    ${EMPTY}    1    570288fdb9d7fb4847572d35
+    TestData3: 登录用户   0    ${EMPTY}    20    ${EMPTY}    ${EMPTY}
+    TestData4: 登录用户   0    ${EMPTY}    ${EMPTY}    1    ${EMPTY}
+    TestData5: 登录用户   0    ${EMPTY}    ${EMPTY}    ${EMPTY}    570288fdb9d7fb4847572d35
+    TestData6: 登录用户   0    ${EMPTY}    ${EMPTY}    1    570288fdb9d7fb4847572d35
+    TestData7: 登录用户   0    ${EMPTY}    20    ${EMPTY}    ${EMPTY}
+
+*** Keywords ***
+Api_v3.0_getactivitiesbyuserid_Temp
+    [Arguments]    ${testdata_info}    ${success}    ${message}        ${count}    ${page}    ${userId}
+    Log    ${testdata_info}
+    ${resp}=    Api_v3.0_sign_in    ${LOGIN_PASSWORD}    ${LOGIN_TYPE}    ${LOGIN_USERNAME}
+    ${resp}=    Api_v3.0_getactivitiesbyuserid    ${resp[3]}    ${resp[4]}    ${EMPTY}    ${count}    ${page}    ${userId}
+    Should Be Equal As Strings    ${resp[1]}    ${success}
+    Should Be Equal As Strings    ${resp[2]}    ${message}
+*** Keywords ***
+Api_v3.0_getactivitiesbyuserid_negative_Temp
+    [Arguments]    ${testdata_info}    ${success}    ${message}        ${count}    ${page}    ${userId}
+    Log    ${testdata_info}
+    ${resp}=    Api_v3.0_sign_in    ${LOGIN_PASSWORD}    ${LOGIN_TYPE}    ${LOGIN_USERNAME}
+    ${resp}=    Api_v3.0_getactivitiesbyuserid    ${resp[3]}    ${resp[4]}    ${EMPTY}    ${count}    ${page}    ${userId}
+    Should Not Be Equal As Strings    ${resp[1]}    ${success}
+    Should Not Be Equal As Strings    ${resp[2]}    ${message}

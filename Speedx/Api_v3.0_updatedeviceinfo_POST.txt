@@ -1,0 +1,39 @@
+*** Settings ***
+Documentation    https://api.speedx.com/api/v3.0/updateDeviceInfo
+Force Tags    prod
+Resource    all_api_resource.txt
+
+*** Test Cases ***
+Api_v3.0_updatedeviceinfo
+    [Documentation]    https://api.speedx.com/api/v3.0/updateDeviceInfo
+    [Template]    Api_v3.0_updatedeviceinfo_Temp
+    TestData: 登录用户   0    ${EMPTY}        6e48c97829bacf8927915a6cec311733    45.46163    -73.43423
+
+Api_v3.0_updatedeviceinfo_negative
+    [Documentation]    https://api.speedx.com/api/v3.0/updateDeviceInfo
+    [Tags]    notready    
+    [Template]    Api_v3.0_updatedeviceinfo_negative_Temp
+    TestData1: 登录用户   0    ${EMPTY}    6e48c97829bacf8927915a6cec311733    45.46163    -73.43423
+    TestData2: 登录用户   0    ${EMPTY}    ${EMPTY}    45.46163    -73.43423
+    TestData3: 登录用户   0    ${EMPTY}    6e48c97829bacf8927915a6cec311733    ${EMPTY}    ${EMPTY}
+    TestData4: 登录用户   0    ${EMPTY}    ${EMPTY}    45.46163    ${EMPTY}
+    TestData5: 登录用户   0    ${EMPTY}    ${EMPTY}    ${EMPTY}    -73.43423
+    TestData6: 登录用户   0    ${EMPTY}    ${EMPTY}    45.46163    -73.43423
+    TestData7: 登录用户   0    ${EMPTY}    ${EMPTY}    ${EMPTY}    ${EMPTY}
+
+*** Keywords ***
+Api_v3.0_updatedeviceinfo_Temp
+    [Arguments]    ${testdata_info}    ${success}    ${message}        ${deviceToken}    ${latitude}    ${longitude}
+    Log    ${testdata_info}
+    ${resp}=    Api_v3.0_sign_in    ${LOGIN_PASSWORD}    ${LOGIN_TYPE}    ${LOGIN_USERNAME}
+    ${resp}=    Api_v3.0_updatedeviceinfo    ${resp[3]}    ${resp[4]}    ${EMPTY}    ${deviceToken}    ${latitude}    ${longitude}
+    Should Be Equal As Strings    ${resp[1]}    ${success}
+    Should Be Equal As Strings    ${resp[2]}    ${message}
+*** Keywords ***
+Api_v3.0_updatedeviceinfo_negative_Temp
+    [Arguments]    ${testdata_info}    ${success}    ${message}        ${deviceToken}    ${latitude}    ${longitude}
+    Log    ${testdata_info}
+    ${resp}=    Api_v3.0_sign_in    ${LOGIN_PASSWORD}    ${LOGIN_TYPE}    ${LOGIN_USERNAME}
+    ${resp}=    Api_v3.0_updatedeviceinfo    ${resp[3]}    ${resp[4]}    ${EMPTY}    ${deviceToken}    ${latitude}    ${longitude}
+    Should Not Be Equal As Strings    ${resp[1]}    ${success}
+    Should Not Be Equal As Strings    ${resp[2]}    ${message}

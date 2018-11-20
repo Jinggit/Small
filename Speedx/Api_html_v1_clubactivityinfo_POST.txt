@@ -1,0 +1,34 @@
+*** Settings ***
+Documentation    https://webapi.speedx.com/api/html_v1/clubActivityInfo
+Force Tags    prod
+Resource    all_api_resource.txt
+
+*** Test Cases ***
+Api_html_v1_clubactivityinfo
+    [Documentation]    https://webapi.speedx.com/api/html_v1/clubActivityInfo
+    [Template]    Api_html_v1_clubactivityinfo_Temp
+    TestData: 登录用户   0    ${EMPTY}        58f69e4fb9d7fb102102c3fc
+
+Api_html_v1_clubactivityinfo_negative
+    [Documentation]    https://webapi.speedx.com/api/html_v1/clubActivityInfo
+    [Tags]    notready    
+    [Template]    Api_html_v1_clubactivityinfo_negative_Temp
+    TestData1: 登录用户   0    ${EMPTY}    58f69e4fb9d7fb102102c3fc
+    TestData2: 登录用户   0    ${EMPTY}    ${EMPTY}
+
+*** Keywords ***
+Api_html_v1_clubactivityinfo_Temp
+    [Arguments]    ${testdata_info}    ${success}    ${message}        ${activityId}
+    Log    ${testdata_info}
+    ${resp}=    Api_v3.0_sign_in    ${LOGIN_PASSWORD}    ${LOGIN_TYPE}    ${LOGIN_USERNAME}
+    ${resp}=    Api_html_v1_clubactivityinfo    ${resp[3]}    ${resp[4]}    ${EMPTY}    ${activityId}
+    Should Be Equal As Strings    ${resp[1]}    ${success}
+    Should Be Equal As Strings    ${resp[2]}    ${message}
+*** Keywords ***
+Api_html_v1_clubactivityinfo_negative_Temp
+    [Arguments]    ${testdata_info}    ${success}    ${message}        ${activityId}
+    Log    ${testdata_info}
+    ${resp}=    Api_v3.0_sign_in    ${LOGIN_PASSWORD}    ${LOGIN_TYPE}    ${LOGIN_USERNAME}
+    ${resp}=    Api_html_v1_clubactivityinfo    ${resp[3]}    ${resp[4]}    ${EMPTY}    ${activityId}
+    Should Not Be Equal As Strings    ${resp[1]}    ${success}
+    Should Not Be Equal As Strings    ${resp[2]}    ${message}

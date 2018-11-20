@@ -1,0 +1,38 @@
+*** Settings ***
+Documentation     全局变量
+
+*** Variables ***
+${API_API_ROOT_URL}    https://api.speedx.com
+${WEBAPI_API_ROOT_URL}    https://webapi.speedx.com
+${API_VERSION}    v1.0    # API版本号
+${USER_AGENT}    iOS/10.300000;iPhone8,4;beast/2.9.2.7321    # USER_AGENT
+${TIMEOUT}    30
+&{HEADER}    Content-Type=application/x-www-form-urlencoded    Connection=keep-alive    X-Client-Lang=en-CA    Accept=*/*    User-Agent=iOS/10.300000;iPhone8,4;beast/2.9.2.7321    Accept-Language=en-CA;q=1, zh-Hans-CA;q=0.9    Content-Length=44    Accept-Encoding=gzip, deflate    # LOGIN_HEADER
+${CONTENT_TYPE}    application/x-www-form-urlencoded    # CONTENT_TYPE
+${LOGIN_PASSWORD}    jingmcse
+${LOGIN_TYPE}    2
+${LOGIN_USERNAME}    5146992566
+${API_V3.0_GETUSERINFOBYUSERID_URI}    /api/v3.0/getUserInfoByUserId
+${API_V3.0_GETGEOCODE_URI}    /api/v3.0/getGeoCode
+${API_V3.0_GETCLUBLIST_URI}    /api/v3.0/getClubList
+${API_V3.0_GETMYCLUBRELATION_URI}    /api/v3.0/getMyClubRelation
+${API_V3.0_GETCHATTOKEN_URI}    /api/v3.0/getChatToken
+${API_V3.0_GET_APP_SETTING_URI}    /api/v3.0/get_app_setting
+${API_V3.0_GETCLUBMEMBERRANKLIST_URI}    /api/v3.0/getClubMemberRankList
+${API_V3.0_UPDATEDEVICEINFO_URI}    /api/v3.0/updateDeviceInfo
+${API_V3.0_CHECKLATESTAPKUPDATE_URI}    /api/v3.0/checkLatestApkUpdate
+${API_V3.0_GETUNREADCOUNT_URI}    /api/v3.0/getUnReadCount
+${API_V3.0_SIGN_IN_URI}    /api/v3.0/sign_in
+${API_V3.0_GETUSERDIAGRAM_URI}    /api/v3.0/getUserDiagram
+${API_HTML_V1_CLUBACTIVITYINFO_URI}    /api/html_v1/clubActivityInfo
+${API_V3.0_ASOLOG_URI}    /api/v3.0/ASOLog
+${API_V3.0_CLUBACTIVITYLIST_URI}    /api/v3.0/clubActivityList
+${API_V3.0_GETACTIVITYDATABYUSERID_URI}    /api/v3.0/getActivityDataByUserId
+${API_V3.0_GETGOALCONFIG_URI}    /api/v3.0/getGoalConfig
+${API_V3.0_GETACTIVITIESBYUSERID_URI}    /api/v3.0/getActivitiesByUserId
+${API_V3.0_GETCLUBINFO_URI}    /api/v3.0/getClubInfo
+${API_V3.0_GETCLUBTIMELINE_URI}    /api/v3.0/getClubTimeLine
+${API_HTML_V1_GETCLUBACTIVITYSTATISTICSBYACTID_URI}    /api/html_v1/getClubActivityStatisticsByActId
+${API_V3.0_GETBADGELIST_URI}    /api/v3.0/getBadgeList
+${API_V3.0_AUTH_TOKEN_URI}    /api/v3.0/auth/token
+${API_V3.0_GETMYGOALINFO_URI}    /api/v3.0/getMyGoalInfo
