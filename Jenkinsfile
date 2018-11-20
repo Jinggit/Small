@@ -13,7 +13,7 @@ node() {
             userRemoteConfigs: 
             [[
                 credentialsId: 'jingghster', 
-                url: 'https://github.com/Jinggit/Small.git'
+                url: 'https://github.com/Jinggit/Small.git',
                 refspec: ('+refs/pull-requests/*/from:refs/remotes/origin/pr/*/from'), 
                 branch: ('origin/pr/${pullRequestId}/from')
             ]]
