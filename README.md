@@ -1,5 +1,6 @@
 Jenkins Pipeline Template
 
+
 ```
 node('web_regression_slave') {
     stage('Checkout') {
